@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Send, Bot, User } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Message {
   id: string;
@@ -16,10 +17,11 @@ interface Message {
 
 const Chat = () => {
   const navigate = useNavigate();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: "Hi! I'm your support assistant. How can I help you today?",
+      content: "Hi! I'm your support assistant powered by Gemini AI. How can I help you today?",
       sender: "bot",
       timestamp: new Date(),
     },
@@ -27,7 +29,15 @@ const Chat = () => {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
-  const sendMessage = () => {
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const sendMessage = async () => {
     if (!input.trim()) return;
 
     const userMessage: Message = {
@@ -41,26 +51,65 @@ const Chat = () => {
     setInput("");
     setIsTyping(true);
 
-    // Simulate bot response
-    setTimeout(() => {
+    try {
+      // Call the edge function with conversation history
+      const { data, error } = await supabase.functions.invoke('chat', {
+        body: {
+          messages: [
+            ...messages.map(m => ({
+              role: m.sender === "user" ? "user" : "assistant",
+              content: m.content
+            })),
+            { role: "user", content: input }
+          ]
+        }
+      });
+
+      if (error) throw error;
+
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
-        content: "I understand your concern. Let me create a ticket for you. Could you provide more details about the issue?",
+        content: data.message,
         sender: "bot",
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, botResponse]);
-      setIsTyping(false);
-    }, 1500);
 
-    // Simulate ticket creation after a few messages
-    if (messages.length > 4) {
-      setTimeout(() => {
-        toast.success("Ticket created successfully!", {
-          description: "Your ticket has been submitted. Redirecting to dashboard...",
-        });
-        setTimeout(() => navigate("/dashboard"), 2000);
-      }, 3000);
+      setMessages((prev) => [...prev, botResponse]);
+
+      // Simulate ticket creation after sufficient conversation
+      if (messages.length > 6 && input.toLowerCase().includes('yes')) {
+        setTimeout(() => {
+          toast.success("Ticket created successfully!", {
+            description: "Your ticket has been submitted. Redirecting to dashboard...",
+          });
+          setTimeout(() => navigate("/dashboard"), 2000);
+        }, 1500);
+      }
+    } catch (error: any) {
+      console.error('Error sending message:', error);
+      
+      let errorMessage = "Sorry, I encountered an error. Please try again.";
+      
+      if (error.message?.includes('429')) {
+        errorMessage = "I'm receiving too many requests. Please wait a moment and try again.";
+      } else if (error.message?.includes('402')) {
+        errorMessage = "The AI service is temporarily unavailable. Please try again later.";
+      }
+      
+      toast.error("Error", {
+        description: errorMessage,
+      });
+
+      const errorResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        content: errorMessage,
+        sender: "bot",
+        timestamp: new Date(),
+      };
+
+      setMessages((prev) => [...prev, errorResponse]);
+    } finally {
+      setIsTyping(false);
     }
   };
 
@@ -78,7 +127,7 @@ const Chat = () => {
         <div className="mb-6">
           <h1 className="mb-2 text-4xl font-bold text-foreground">New Support Ticket</h1>
           <p className="text-lg text-muted-foreground">
-            Chat with our AI assistant to create your support ticket
+            Chat with our Gemini AI assistant to create your support ticket
           </p>
         </div>
 
@@ -133,6 +182,7 @@ const Chat = () => {
                 </div>
               </div>
             )}
+            <div ref={messagesEndRef} />
           </div>
 
           <div className="border-t border-border p-4">
@@ -142,12 +192,13 @@ const Chat = () => {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
+                disabled={isTyping}
                 className="flex-1"
               />
               <Button
                 onClick={sendMessage}
                 className="gap-2 bg-gradient-primary hover:opacity-90"
-                disabled={!input.trim()}
+                disabled={!input.trim() || isTyping}
               >
                 <Send className="h-4 w-4" />
                 Send
