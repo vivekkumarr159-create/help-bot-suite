@@ -14,13 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bookings: {
+        Row: {
+          booking_data: Json
+          booking_date: string
+          booking_reference: string
+          booking_type: string
+          created_at: string
+          id: string
+          qr_code_data: string
+          status: string
+        }
+        Insert: {
+          booking_data: Json
+          booking_date: string
+          booking_reference: string
+          booking_type: string
+          created_at?: string
+          id?: string
+          qr_code_data: string
+          status?: string
+        }
+        Update: {
+          booking_data?: Json
+          booking_date?: string
+          booking_reference?: string
+          booking_type?: string
+          created_at?: string
+          id?: string
+          qr_code_data?: string
+          status?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_booking_reference: { Args: never; Returns: string }
     }
     Enums: {
       [_ in never]: never
