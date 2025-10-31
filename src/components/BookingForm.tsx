@@ -5,6 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar, MapPin, Users, Clock, Film, BookOpen, Dumbbell, Ticket } from "lucide-react";
+import museumImg from "@/assets/museum.jpg";
+import libraryImg from "@/assets/library.jpg";
+import sportsImg from "@/assets/sports.jpg";
+import movieImg from "@/assets/movie.jpg";
+import eventImg from "@/assets/event.jpg";
 
 interface BookingFormProps {
   onSubmit: (bookingType: string, bookingData: any) => void;
@@ -16,11 +21,41 @@ const BookingForm = ({ onSubmit, isLoading }: BookingFormProps) => {
   const [formData, setFormData] = useState<any>({});
 
   const bookingTypes = [
-    { value: "museum", label: "Museum Visit", icon: MapPin },
-    { value: "library", label: "Library Booking", icon: BookOpen },
-    { value: "sports", label: "Sports Facility", icon: Dumbbell },
-    { value: "movie", label: "Movie Theater", icon: Film },
-    { value: "event", label: "Event Ticket", icon: Ticket },
+    { value: "museum", label: "Museum Visit", icon: MapPin, image: museumImg },
+    { value: "library", label: "Library Booking", icon: BookOpen, image: libraryImg },
+    { value: "sports", label: "Sports Facility", icon: Dumbbell, image: sportsImg },
+    { value: "movie", label: "Movie Theater", icon: Film, image: movieImg },
+    { value: "event", label: "Event Ticket", icon: Ticket, image: eventImg },
+  ];
+
+  const timeSlots = [
+    { value: "09:00", label: "9:00 AM" },
+    { value: "13:00", label: "1:00 PM" },
+    { value: "16:00", label: "4:00 PM" },
+    { value: "18:00", label: "6:00 PM" },
+  ];
+
+  const usStates = [
+    "California",
+    "Texas",
+    "Florida",
+    "New York",
+    "Pennsylvania",
+    "Illinois",
+    "Ohio",
+    "Georgia",
+    "North Carolina",
+    "Michigan",
+    "New Jersey",
+    "Virginia",
+    "Washington",
+    "Arizona",
+    "Massachusetts",
+    "Tennessee",
+    "Indiana",
+    "Missouri",
+    "Maryland",
+    "Wisconsin",
   ];
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -84,14 +119,34 @@ const BookingForm = ({ onSubmit, isLoading }: BookingFormProps) => {
           />
         </div>
         <div>
-          <Label htmlFor="time">Time</Label>
-          <Input
-            id="time"
-            type="time"
-            required
-            value={formData.time || ""}
-            onChange={(e) => updateFormData("time", e.target.value)}
-          />
+          <Label htmlFor="time">Time Slot</Label>
+          <Select onValueChange={(value) => updateFormData("time", value)} required>
+            <SelectTrigger>
+              <SelectValue placeholder="Select time slot" />
+            </SelectTrigger>
+            <SelectContent>
+              {timeSlots.map((slot) => (
+                <SelectItem key={slot.value} value={slot.value}>
+                  {slot.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label htmlFor="state">State</Label>
+          <Select onValueChange={(value) => updateFormData("state", value)} required>
+            <SelectTrigger>
+              <SelectValue placeholder="Select state" />
+            </SelectTrigger>
+            <SelectContent>
+              {usStates.map((state) => (
+                <SelectItem key={state} value={state}>
+                  {state}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </>
     );
@@ -291,30 +346,59 @@ const BookingForm = ({ onSubmit, isLoading }: BookingFormProps) => {
     }
   };
 
+  const selectedType = bookingTypes.find(t => t.value === bookingType);
+
   return (
     <Card className="p-6 bg-card shadow-lg">
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <Label htmlFor="bookingType">Select Booking Type</Label>
-          <Select onValueChange={setBookingType} required>
-            <SelectTrigger>
-              <SelectValue placeholder="Choose what to book" />
-            </SelectTrigger>
-            <SelectContent>
-              {bookingTypes.map((type) => {
-                const Icon = type.icon;
-                return (
-                  <SelectItem key={type.value} value={type.value}>
-                    <div className="flex items-center gap-2">
-                      <Icon className="h-4 w-4" />
-                      {type.label}
+          <Label htmlFor="bookingType" className="text-lg font-semibold mb-4 block">Select Booking Type</Label>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {bookingTypes.map((type) => {
+              const Icon = type.icon;
+              return (
+                <button
+                  key={type.value}
+                  type="button"
+                  onClick={() => setBookingType(type.value)}
+                  className={`relative overflow-hidden rounded-lg border-2 transition-all ${
+                    bookingType === type.value
+                      ? "border-primary shadow-lg scale-105"
+                      : "border-border hover:border-primary/50"
+                  }`}
+                >
+                  <img
+                    src={type.image}
+                    alt={type.label}
+                    className="w-full h-32 object-cover"
+                  />
+                  <div className="p-3 bg-background/95 backdrop-blur">
+                    <div className="flex items-center gap-2 justify-center">
+                      <Icon className="h-5 w-5 text-primary" />
+                      <span className="font-medium">{type.label}</span>
                     </div>
-                  </SelectItem>
-                );
-              })}
-            </SelectContent>
-          </Select>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
+
+        {selectedType && (
+          <div className="pt-4 border-t">
+            <div className="flex items-center gap-3 mb-4">
+              <img
+                src={selectedType.image}
+                alt={selectedType.label}
+                className="w-16 h-16 rounded-lg object-cover"
+              />
+              <div>
+                <h3 className="font-semibold text-lg">{selectedType.label}</h3>
+                <p className="text-sm text-muted-foreground">Complete your booking details</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {renderFields()}
 
