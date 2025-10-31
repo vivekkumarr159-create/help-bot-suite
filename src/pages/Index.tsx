@@ -18,14 +18,14 @@ const Index = () => {
               Support Tickets, Simplified with AI
             </h1>
             <p className="mb-8 text-xl text-muted-foreground">
-              Create and manage support tickets through natural conversation. Our AI chatbot
-              understands your issues and helps resolve them faster.
+              Book museums, libraries, sports facilities, movie theaters, and events. Get instant 
+              confirmation with beautiful tickets and QR codes for seamless entry.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link to="/chat">
                 <Button size="lg" className="gap-2 bg-gradient-primary hover:opacity-90 shadow-glow">
                   <MessageSquare className="h-5 w-5" />
-                  Start Chatting
+                  Create Booking
                 </Button>
               </Link>
               <Link to="/dashboard">

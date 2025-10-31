@@ -10,7 +10,7 @@ const Header = () => {
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-primary">
             <MessageSquare className="h-6 w-6 text-primary-foreground" />
           </div>
-          <span className="text-xl font-bold text-foreground">TicketBot</span>
+          <span className="text-xl font-bold text-foreground">BookNow</span>
         </Link>
         
         <nav className="flex items-center gap-4">
@@ -23,7 +23,7 @@ const Header = () => {
           <Link to="/chat">
             <Button className="gap-2 bg-gradient-primary hover:opacity-90">
               <MessageSquare className="h-4 w-4" />
-              New Ticket
+              New Booking
             </Button>
           </Link>
         </nav>
