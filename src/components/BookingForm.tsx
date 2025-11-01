@@ -35,28 +35,51 @@ const BookingForm = ({ onSubmit, isLoading }: BookingFormProps) => {
     { value: "18:00", label: "6:00 PM" },
   ];
 
-  const usStates = [
-    "California",
-    "Texas",
-    "Florida",
-    "New York",
-    "Pennsylvania",
-    "Illinois",
-    "Ohio",
-    "Georgia",
-    "North Carolina",
-    "Michigan",
-    "New Jersey",
-    "Virginia",
-    "Washington",
-    "Arizona",
-    "Massachusetts",
-    "Tennessee",
-    "Indiana",
-    "Missouri",
-    "Maryland",
-    "Wisconsin",
+  const indianStates = [
+    "Maharashtra",
+    "Delhi",
+    "Karnataka",
+    "Tamil Nadu",
+    "West Bengal",
+    "Rajasthan",
+    "Uttar Pradesh",
+    "Gujarat",
+    "Kerala",
+    "Madhya Pradesh",
+    "Telangana",
+    "Andhra Pradesh",
+    "Punjab",
+    "Haryana",
+    "Bihar",
+    "Odisha",
+    "Assam",
+    "Jharkhand",
+    "Goa",
+    "Uttarakhand",
   ];
+
+  const museumsByState: Record<string, string[]> = {
+    "Maharashtra": ["Chhatrapati Shivaji Maharaj Vastu Sangrahalaya", "Prince of Wales Museum", "Dr. Bhau Daji Lad Museum", "Nehru Science Centre"],
+    "Delhi": ["National Museum", "National Rail Museum", "National Gallery of Modern Art", "Indira Gandhi Memorial Museum"],
+    "Karnataka": ["Government Museum Bangalore", "Visvesvaraya Industrial & Technological Museum", "HAL Aerospace Museum", "National Gallery of Modern Art"],
+    "Tamil Nadu": ["Government Museum Chennai", "Fort Museum", "National Art Gallery", "Vivekananda House"],
+    "West Bengal": ["Indian Museum Kolkata", "Victoria Memorial", "Marble Palace", "Science City"],
+    "Rajasthan": ["City Palace Museum Jaipur", "Albert Hall Museum", "Mehrangarh Fort Museum", "Umaid Bhawan Palace Museum"],
+    "Uttar Pradesh": ["State Museum Lucknow", "Allahabad Museum", "Sarnath Museum", "Government Museum Mathura"],
+    "Gujarat": ["Calico Museum of Textiles", "Baroda Museum", "Sardar Vallabhbhai Patel Museum", "Kite Museum"],
+    "Kerala": ["Napier Museum", "Kerala Folklore Museum", "Hill Palace Museum", "Indo-Portuguese Museum"],
+    "Madhya Pradesh": ["Central Museum Indore", "State Museum Bhopal", "Tribal Museum", "Archaeological Museum Gwalior"],
+    "Telangana": ["Salar Jung Museum", "Telangana State Museum", "Nizam Museum", "City Museum"],
+    "Andhra Pradesh": ["Archaeological Museum Amaravati", "Victoria Jubilee Museum", "Visakha Museum", "Kondapalli Fort Museum"],
+    "Punjab": ["Punjab State War Heroes Memorial & Museum", "Partition Museum", "Government Museum Chandigarh", "Maharaja Ranjit Singh Museum"],
+    "Haryana": ["Haryana State Museum", "Archaeological Museum Kurukshetra", "Surajkund Crafts Museum", "Railway Heritage Museum"],
+    "Bihar": ["Patna Museum", "Bihar Museum", "Nalanda Archaeological Museum", "Jalan Museum"],
+    "Odisha": ["Odisha State Museum", "Regional Museum of Natural History", "Tribal Museum", "Odisha Maritime Museum"],
+    "Assam": ["Assam State Museum", "Tea Museum", "Don Bosco Museum", "Science Museum"],
+    "Jharkhand": ["Tribal Research Institute Museum", "Ranchi Museum", "Jamshedpur Tribal Museum", "State Museum"],
+    "Goa": ["Goa State Museum", "Archaeological Museum Old Goa", "Naval Aviation Museum", "Goa Chitra Museum"],
+    "Uttarakhand": ["Uttarakhand State Museum", "Forest Research Institute Museum", "Kumaon Regimental Centre Museum", "Wax Museum"],
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -135,12 +158,17 @@ const BookingForm = ({ onSubmit, isLoading }: BookingFormProps) => {
         </div>
         <div>
           <Label htmlFor="state">State</Label>
-          <Select onValueChange={(value) => updateFormData("state", value)} required>
+          <Select onValueChange={(value) => {
+            updateFormData("state", value);
+            if (bookingType === "museum") {
+              updateFormData("museum", "");
+            }
+          }} required>
             <SelectTrigger>
               <SelectValue placeholder="Select state" />
             </SelectTrigger>
             <SelectContent>
-              {usStates.map((state) => (
+              {indianStates.map((state) => (
                 <SelectItem key={state} value={state}>
                   {state}
                 </SelectItem>
@@ -158,15 +186,21 @@ const BookingForm = ({ onSubmit, isLoading }: BookingFormProps) => {
             {commonFields}
             <div>
               <Label htmlFor="museum">Museum</Label>
-              <Select onValueChange={(value) => updateFormData("museum", value)} required>
+              <Select 
+                onValueChange={(value) => updateFormData("museum", value)} 
+                required
+                disabled={!formData.state}
+                value={formData.museum || ""}
+              >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select museum" />
+                  <SelectValue placeholder={formData.state ? "Select museum" : "Select state first"} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="national">National Museum</SelectItem>
-                  <SelectItem value="art">Art Museum</SelectItem>
-                  <SelectItem value="history">History Museum</SelectItem>
-                  <SelectItem value="science">Science Museum</SelectItem>
+                  {formData.state && museumsByState[formData.state]?.map((museum) => (
+                    <SelectItem key={museum} value={museum}>
+                      {museum}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
