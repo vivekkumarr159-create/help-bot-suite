@@ -18,7 +18,7 @@ export type Database = {
         Row: {
           booking_data: Json
           booking_date: string
-          booking_reference: string
+          booking_reference: string | null
           booking_type: string
           created_at: string
           id: string
@@ -28,7 +28,7 @@ export type Database = {
         Insert: {
           booking_data: Json
           booking_date: string
-          booking_reference: string
+          booking_reference?: string | null
           booking_type: string
           created_at?: string
           id?: string
@@ -38,7 +38,7 @@ export type Database = {
         Update: {
           booking_data?: Json
           booking_date?: string
-          booking_reference?: string
+          booking_reference?: string | null
           booking_type?: string
           created_at?: string
           id?: string
