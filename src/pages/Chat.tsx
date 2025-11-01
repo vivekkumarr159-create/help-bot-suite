@@ -1,43 +1,100 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import Header from "@/components/Header";
 import BookingForm from "@/components/BookingForm";
-import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import QRCode from "qrcode";
+import type { User } from "@supabase/supabase-js";
 
 const Chat = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    // Check authentication
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        navigate("/auth");
+      } else {
+        setUser(session.user);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!session) {
+        navigate("/auth");
+      } else {
+        setUser(session.user);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   const handleBookingSubmit = async (bookingType: string, bookingData: any) => {
-    setIsLoading(true);
+    if (!user) {
+      toast.error("Please sign in to create a booking");
+      navigate("/auth");
+      return;
+    }
 
     try {
-      // Combine date and time for booking_date
-      const bookingDateTime = new Date(`${bookingData.date}T${bookingData.time}`);
-      
-      // Generate QR code data
-      const qrCodeData = JSON.stringify({
+      setIsLoading(true);
+
+      // Generate QR code
+      const qrData = JSON.stringify({
         type: bookingType,
         data: bookingData,
         timestamp: new Date().toISOString(),
       });
+      
+      const qrCodeDataUrl = await QRCode.toDataURL(qrData, {
+        width: 300,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#ffffff',
+        },
+      });
 
-      // Insert booking into database
+      // Save to database
       const { data, error } = await supabase
         .from("bookings")
-        .insert({
+        .insert([{
           booking_type: bookingType,
           booking_data: bookingData as any,
-          booking_date: bookingDateTime.toISOString(),
-          qr_code_data: qrCodeData,
-        } as any)
+          booking_date: new Date(bookingData.date).toISOString(),
+          qr_code_data: qrCodeDataUrl,
+          status: "confirmed",
+        }])
         .select()
         .single();
 
       if (error) throw error;
 
-      toast.success("Booking created successfully!");
+      // Send confirmation email
+      const userEmail = user.email || bookingData.email;
+      try {
+        const { error: emailError } = await supabase.functions.invoke("send-booking-email", {
+          body: {
+            bookingId: data.id,
+            userEmail: userEmail,
+          },
+        });
+
+        if (emailError) {
+          console.error("Error sending email:", emailError);
+          toast.warning("Booking created but email failed to send");
+        } else {
+          toast.success("Booking created and confirmation email sent!");
+        }
+      } catch (emailError) {
+        console.error("Error sending email:", emailError);
+        toast.warning("Booking created but email failed to send");
+      }
+
       navigate(`/ticket/${data.id}`);
     } catch (error) {
       console.error("Error creating booking:", error);
