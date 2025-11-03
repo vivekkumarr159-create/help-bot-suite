@@ -7,21 +7,33 @@ import { Search, MapPin, BookOpen, Dumbbell, Film, Ticket } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import type { User } from "@supabase/supabase-js";
 
 const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [bookings, setBookings] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    fetchBookings();
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+      if (user) {
+        fetchBookings(user.id);
+      } else {
+        setIsLoading(false);
+      }
+    };
+    getUser();
   }, []);
 
-  const fetchBookings = async () => {
+  const fetchBookings = async (userId: string) => {
     try {
       const { data, error } = await supabase
         .from("bookings")
         .select("*")
+        .eq("user_id", userId)
         .order("created_at", { ascending: false });
 
       if (error) throw error;

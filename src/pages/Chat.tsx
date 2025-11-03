@@ -43,20 +43,12 @@ const Chat = () => {
     try {
       setIsLoading(true);
 
-      // Generate QR code
+      // Generate QR code data (raw string, not data URL)
       const qrData = JSON.stringify({
         type: bookingType,
         data: bookingData,
         timestamp: new Date().toISOString(),
-      });
-      
-      const qrCodeDataUrl = await QRCode.toDataURL(qrData, {
-        width: 300,
-        margin: 2,
-        color: {
-          dark: '#000000',
-          light: '#ffffff',
-        },
+        userId: user.id,
       });
 
       // Save to database
@@ -66,8 +58,9 @@ const Chat = () => {
           booking_type: bookingType,
           booking_data: bookingData as any,
           booking_date: new Date(bookingData.date).toISOString(),
-          qr_code_data: qrCodeDataUrl,
+          qr_code_data: qrData,
           status: "confirmed",
+          user_id: user.id,
         }])
         .select()
         .single();

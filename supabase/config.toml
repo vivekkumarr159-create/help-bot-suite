@@ -1,1 +1,10 @@
 project_id = "wkwouuyrzjeiwykcoihe"
+
+[functions.send-booking-email]
+verify_jwt = true
+
+[functions.setup-admin-users]
+verify_jwt = false
+
+[functions.chat]
+verify_jwt = false

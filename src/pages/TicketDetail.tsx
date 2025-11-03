@@ -18,13 +18,25 @@ const TicketDetail = () => {
 
   const fetchBooking = async () => {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast.error("Please sign in to view booking details");
+        return;
+      }
+
       const { data, error } = await supabase
         .from("bookings")
         .select("*")
         .eq("id", id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
+      
+      if (!data) {
+        toast.error("Booking not found or access denied");
+      }
+      
       setBooking(data);
     } catch (error) {
       console.error("[TicketDetail] Error fetching booking:", error);
