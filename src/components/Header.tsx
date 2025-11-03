@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Home, Calendar, MessageSquare, LogOut, User } from "lucide-react";
+import { Home, Calendar, MessageSquare, LogOut, User, Shield } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
@@ -10,18 +10,42 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [isAdminOrSupport, setIsAdminOrSupport] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        checkUserRole(session.user.id);
+      }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        checkUserRole(session.user.id);
+      } else {
+        setIsAdminOrSupport(false);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const checkUserRole = async (userId: string) => {
+    try {
+      const { data: roles } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId);
+
+      const hasRole = roles?.some(r => r.role === "admin" || r.role === "support");
+      setIsAdminOrSupport(hasRole || false);
+    } catch (error) {
+      console.error("[Header] Error checking role:", error);
+      setIsAdminOrSupport(false);
+    }
+  };
 
   const handleSignOut = async () => {
     try {
@@ -69,6 +93,17 @@ const Header = () => {
               <MessageSquare className="h-4 w-4" />
               New Booking
             </Button>
+            
+            {isAdminOrSupport && (
+              <Button
+                variant={location.pathname === "/support" ? "default" : "ghost"}
+                onClick={() => navigate("/support")}
+                className="gap-2"
+              >
+                <Shield className="h-4 w-4" />
+                Support
+              </Button>
+            )}
             
             {user ? (
               <div className="flex items-center gap-2 ml-2 pl-2 border-l">

@@ -9,6 +9,7 @@ import Chat from "./pages/Chat";
 import TicketDetail from "./pages/TicketDetail";
 import Auth from "./pages/Auth";
 import AdminSetup from "./pages/AdminSetup";
+import SupportDashboard from "./pages/SupportDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/ticket/:id" element={<TicketDetail />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/admin-setup" element={<AdminSetup />} />
+          <Route path="/support" element={<SupportDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
