@@ -27,8 +27,8 @@ const TicketDetail = () => {
       if (error) throw error;
       setBooking(data);
     } catch (error) {
-      console.error("Error fetching booking:", error);
-      toast.error("Failed to load booking details");
+      console.error("[TicketDetail] Error fetching booking:", error);
+      toast.error("Unable to load booking details. Please try again.");
     } finally {
       setIsLoading(false);
     }

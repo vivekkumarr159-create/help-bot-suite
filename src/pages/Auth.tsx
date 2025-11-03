@@ -38,7 +38,8 @@ const Auth = () => {
 
       if (error) throw error;
     } catch (error: any) {
-      toast.error(error.message || "Failed to sign in with Google");
+      console.error('[Auth] Sign-in error:', error);
+      toast.error("Unable to sign in. Please try again.");
     } finally {
       setLoading(false);
     }

@@ -96,9 +96,9 @@ const Chat = () => {
       }
 
       navigate(`/ticket/${data.id}`);
-    } catch (error) {
-      console.error("Error creating booking:", error);
-      toast.error("Failed to create booking. Please try again.");
+    } catch (error: any) {
+      console.error("[Booking] Creation error:", error);
+      toast.error("Unable to create booking. Please try again.");
     } finally {
       setIsLoading(false);
     }

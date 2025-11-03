@@ -20,16 +20,39 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Verify JWT and get authenticated user
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: "Authentication required" }),
+        { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    const token = authHeader.replace("Bearer ", "");
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const authClient = createClient(supabaseUrl, supabaseAnonKey);
+    
+    const { data: { user }, error: authError } = await authClient.auth.getUser(token);
+    
+    if (authError || !user) {
+      console.error("[Auth] Invalid token");
+      return new Response(
+        JSON.stringify({ error: "Invalid authentication" }),
+        { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
     const { bookingId, userEmail }: BookingEmailRequest = await req.json();
     
     console.log("Sending booking email for:", bookingId, "to:", userEmail);
 
-    // Initialize Supabase client
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    // Initialize Supabase client with service role for booking fetch
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Fetch booking details
+    // Fetch booking details and verify ownership
     const { data: booking, error: bookingError } = await supabase
       .from("bookings")
       .select("*")
@@ -37,11 +60,22 @@ const handler = async (req: Request): Promise<Response> => {
       .single();
 
     if (bookingError || !booking) {
-      console.error("Error fetching booking:", bookingError);
-      throw new Error("Booking not found");
+      console.error("[Booking] Fetch error:", bookingError);
+      return new Response(
+        JSON.stringify({ error: "Booking not found" }),
+        { status: 404, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
     }
 
+    // Verify the email matches the booking data and user ownership
     const bookingData = booking.booking_data as any;
+    if (bookingData.email !== userEmail || bookingData.email !== user.email) {
+      console.error("[Security] Email mismatch attempt");
+      return new Response(
+        JSON.stringify({ error: "Unauthorized access" }),
+        { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
     const bookingType = booking.booking_type;
     const bookingReference = booking.booking_reference;
     const qrCodeData = booking.qr_code_data;
@@ -138,9 +172,12 @@ const handler = async (req: Request): Promise<Response> => {
       },
     });
   } catch (error: any) {
-    console.error("Error in send-booking-email function:", error);
+    console.error("[EdgeFunction] Error in send-booking-email:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: "An error occurred processing your request",
+        code: "INTERNAL_ERROR"
+      }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },

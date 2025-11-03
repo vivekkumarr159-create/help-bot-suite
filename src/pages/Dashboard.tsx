@@ -27,8 +27,8 @@ const Dashboard = () => {
       if (error) throw error;
       setBookings(data || []);
     } catch (error) {
-      console.error("Error fetching bookings:", error);
-      toast.error("Failed to load bookings");
+      console.error("[Dashboard] Error fetching bookings:", error);
+      toast.error("Unable to load bookings. Please try again.");
     } finally {
       setIsLoading(false);
     }
