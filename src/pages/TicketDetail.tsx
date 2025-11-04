@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import BookingTicket from "@/components/BookingTicket";
@@ -9,6 +9,7 @@ import { toast } from "sonner";
 
 const TicketDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [booking, setBooking] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
