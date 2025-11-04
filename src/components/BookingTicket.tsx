@@ -183,62 +183,62 @@ const BookingTicket = ({ booking }: BookingTicketProps) => {
 
   return (
     <Card className="overflow-hidden bg-gradient-to-br from-card to-card/80 shadow-elegant">
-      <div className="bg-gradient-primary p-6 text-primary-foreground">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-2xl font-bold">{getBookingTypeLabel(booking.booking_type)}</h2>
-          <Badge className={getStatusColor(booking.status)}>{getDisplayStatus()}</Badge>
+      <div className="bg-gradient-primary p-4 sm:p-6 text-primary-foreground">
+        <div className="mb-3 sm:mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <h2 className="text-xl sm:text-2xl font-bold">{getBookingTypeLabel(booking.booking_type)}</h2>
+          <Badge className={`${getStatusColor(booking.status)} text-xs sm:text-sm`}>{getDisplayStatus()}</Badge>
         </div>
-        <div className="flex items-center gap-2 text-lg font-mono">
-          <Hash className="h-5 w-5" />
-          {booking.booking_reference}
+        <div className="flex items-center gap-2 text-base sm:text-lg font-mono">
+          <Hash className="h-4 w-4 sm:h-5 sm:w-5" />
+          <span className="break-all">{booking.booking_reference}</span>
         </div>
       </div>
 
-      <div className="grid gap-6 p-6 md:grid-cols-2">
-        <div className="space-y-4">
+      <div className="grid gap-4 sm:gap-6 p-4 sm:p-6 md:grid-cols-2">
+        <div className="space-y-3 sm:space-y-4">
           <div>
-            <h3 className="mb-3 text-lg font-semibold text-foreground">Booking Details</h3>
-            <div className="space-y-2 text-sm text-muted-foreground">
+            <h3 className="mb-2 sm:mb-3 text-base sm:text-lg font-semibold text-foreground">Booking Details</h3>
+            <div className="space-y-2 text-xs sm:text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
-                <User className="h-4 w-4" />
-                <span>{booking.booking_data.name}</span>
+                <User className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                <span className="break-words">{booking.booking_data.name}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4" />
-                <span>{booking.booking_data.email}</span>
+                <Mail className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                <span className="break-all">{booking.booking_data.email}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4" />
+                <Phone className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                 <span>{booking.booking_data.phone}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
+                <Calendar className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                 <span>{booking.booking_data.date}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4" />
+                <Clock className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                 <span>{booking.booking_data.time}</span>
               </div>
             </div>
           </div>
 
           <div>
-            <h3 className="mb-3 text-lg font-semibold text-foreground">Additional Information</h3>
-            <div className="space-y-2 text-sm text-muted-foreground">{renderBookingDetails()}</div>
+            <h3 className="mb-2 sm:mb-3 text-base sm:text-lg font-semibold text-foreground">Additional Information</h3>
+            <div className="space-y-2 text-xs sm:text-sm text-muted-foreground">{renderBookingDetails()}</div>
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-center space-y-4">
-          <div className="rounded-lg bg-white p-4 shadow-lg">
-            <canvas ref={qrRef} />
+        <div className="flex flex-col items-center justify-center space-y-3 sm:space-y-4 order-first md:order-last">
+          <div className="rounded-lg bg-white p-3 sm:p-4 shadow-lg">
+            <canvas ref={qrRef} className="max-w-[160px] sm:max-w-[200px]" />
           </div>
-          <p className="text-center text-sm text-muted-foreground">
+          <p className="text-center text-xs sm:text-sm text-muted-foreground px-2">
             Scan this QR code at the venue for quick entry
           </p>
         </div>
       </div>
 
-      <div className="border-t border-border bg-muted/30 p-4 text-center text-xs text-muted-foreground">
+      <div className="border-t border-border bg-muted/30 p-3 sm:p-4 text-center text-xs text-muted-foreground">
         Please arrive 15 minutes before your scheduled time. Keep this ticket handy for entry.
       </div>
     </Card>

@@ -114,10 +114,10 @@ const Chat = () => {
   return (
     <div className="min-h-screen bg-gradient-hero">
       <Header />
-      <main className="container py-8">
+      <main className="container px-4 sm:px-6 py-6 sm:py-8">
         <div className="mx-auto max-w-4xl">
-          <h1 className="mb-6 text-4xl font-bold text-foreground">Create New Booking</h1>
-          <p className="mb-8 text-lg text-muted-foreground">
+          <h1 className="mb-4 sm:mb-6 text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">Create New Booking</h1>
+          <p className="mb-6 sm:mb-8 text-sm sm:text-base md:text-lg text-muted-foreground">
             Select your booking type and fill in the details to get your ticket with QR code
           </p>
           

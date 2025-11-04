@@ -70,23 +70,23 @@ const TicketDetail = () => {
   return (
     <div className="min-h-screen bg-gradient-hero">
       <Header />
-      <main className="container py-8">
+      <main className="container px-4 sm:px-6 py-6 sm:py-8">
         <Link to="/dashboard">
-          <Button variant="ghost" className="mb-6 gap-2">
-            <ArrowLeft className="h-4 w-4" />
+          <Button variant="ghost" className="mb-4 sm:mb-6 gap-1 sm:gap-2 h-9 sm:h-10 text-sm sm:text-base">
+            <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4" />
             Back to Dashboard
           </Button>
         </Link>
 
         {isLoading ? (
-          <div className="text-center text-muted-foreground">Loading booking...</div>
+          <div className="text-center text-sm sm:text-base text-muted-foreground">Loading booking...</div>
         ) : booking ? (
           <>
-            <h1 className="mb-6 text-4xl font-bold text-foreground">Your Booking Ticket</h1>
+            <h1 className="mb-4 sm:mb-6 text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">Your Booking Ticket</h1>
             <BookingTicket booking={booking} />
           </>
         ) : (
-          <div className="text-center text-muted-foreground">Booking not found</div>
+          <div className="text-center text-sm sm:text-base text-muted-foreground">Booking not found</div>
         )}
       </main>
     </div>

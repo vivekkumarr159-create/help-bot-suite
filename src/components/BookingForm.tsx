@@ -383,11 +383,11 @@ const BookingForm = ({ onSubmit, isLoading }: BookingFormProps) => {
   const selectedType = bookingTypes.find(t => t.value === bookingType);
 
   return (
-    <Card className="p-6 bg-card shadow-lg">
-      <form onSubmit={handleSubmit} className="space-y-6">
+    <Card className="p-4 sm:p-6 bg-card shadow-lg">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
         <div>
-          <Label htmlFor="bookingType" className="text-lg font-semibold mb-4 block">Select Booking Type</Label>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Label htmlFor="bookingType" className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 block">Select Booking Type</Label>
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {bookingTypes.map((type) => {
               const Icon = type.icon;
               return (
@@ -404,12 +404,12 @@ const BookingForm = ({ onSubmit, isLoading }: BookingFormProps) => {
                   <img
                     src={type.image}
                     alt={type.label}
-                    className="w-full h-32 object-cover"
+                    className="w-full h-20 sm:h-28 md:h-32 object-cover"
                   />
-                  <div className="p-3 bg-background/95 backdrop-blur">
-                    <div className="flex items-center gap-2 justify-center">
-                      <Icon className="h-5 w-5 text-primary" />
-                      <span className="font-medium">{type.label}</span>
+                  <div className="p-2 sm:p-3 bg-background/95 backdrop-blur">
+                    <div className="flex items-center gap-1 sm:gap-2 justify-center">
+                      <Icon className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 text-primary" />
+                      <span className="font-medium text-xs sm:text-sm md:text-base">{type.label}</span>
                     </div>
                   </div>
                 </button>
@@ -419,16 +419,16 @@ const BookingForm = ({ onSubmit, isLoading }: BookingFormProps) => {
         </div>
 
         {selectedType && (
-          <div className="pt-4 border-t">
-            <div className="flex items-center gap-3 mb-4">
+          <div className="pt-3 sm:pt-4 border-t">
+            <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
               <img
                 src={selectedType.image}
                 alt={selectedType.label}
-                className="w-16 h-16 rounded-lg object-cover"
+                className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover"
               />
               <div>
-                <h3 className="font-semibold text-lg">{selectedType.label}</h3>
-                <p className="text-sm text-muted-foreground">Complete your booking details</p>
+                <h3 className="font-semibold text-base sm:text-lg">{selectedType.label}</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground">Complete your booking details</p>
               </div>
             </div>
           </div>
