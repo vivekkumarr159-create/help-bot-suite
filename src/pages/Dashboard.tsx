@@ -16,16 +16,25 @@ const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-      if (user) {
-        fetchBookings(user.id);
-      } else {
-        setIsLoading(false);
+    const initializePage = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        setUser(session.user);
+        await fetchBookings(session.user.id);
       }
+      setIsLoading(false);
     };
-    getUser();
+
+    initializePage();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        setUser(session.user);
+        fetchBookings(session.user.id);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const fetchBookings = async (userId: string) => {

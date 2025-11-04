@@ -13,8 +13,28 @@ const TicketDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchBooking();
-  }, [id]);
+    const initializePage = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        toast.error("Please sign in to view your booking");
+        navigate("/auth");
+        return;
+      }
+
+      await fetchBooking();
+    };
+
+    initializePage();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        navigate("/auth");
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [id, navigate]);
 
   const fetchBooking = async () => {
     try {

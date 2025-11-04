@@ -21,7 +21,27 @@ const SupportDashboard = () => {
   const [editData, setEditData] = useState<any>({});
 
   useEffect(() => {
-    checkUserRole();
+    const checkAuthAndRole = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        toast.error("Please sign in to access this page");
+        navigate("/auth");
+        return;
+      }
+
+      await checkUserRole();
+    };
+
+    checkAuthAndRole();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        navigate("/auth");
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, [navigate]);
 
   const checkUserRole = async () => {

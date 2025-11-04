@@ -43,7 +43,15 @@ const BookingTicket = ({ booking }: BookingTicketProps) => {
     return labels[type] || type;
   };
 
+  const isExpired = () => {
+    const bookingDateTime = new Date(`${booking.booking_data.date}T${booking.booking_data.time}`);
+    return bookingDateTime < new Date();
+  };
+
   const getStatusColor = (status: string) => {
+    if (isExpired() && status === "confirmed") {
+      return "bg-destructive text-destructive-foreground";
+    }
     switch (status) {
       case "confirmed":
         return "bg-secondary text-secondary-foreground";
@@ -54,6 +62,13 @@ const BookingTicket = ({ booking }: BookingTicketProps) => {
       default:
         return "bg-muted text-muted-foreground";
     }
+  };
+
+  const getDisplayStatus = () => {
+    if (isExpired() && booking.status === "confirmed") {
+      return "expired";
+    }
+    return booking.status;
   };
 
   const renderBookingDetails = () => {
@@ -171,7 +186,7 @@ const BookingTicket = ({ booking }: BookingTicketProps) => {
       <div className="bg-gradient-primary p-6 text-primary-foreground">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-2xl font-bold">{getBookingTypeLabel(booking.booking_type)}</h2>
-          <Badge className={getStatusColor(booking.status)}>{booking.status}</Badge>
+          <Badge className={getStatusColor(booking.status)}>{getDisplayStatus()}</Badge>
         </div>
         <div className="flex items-center gap-2 text-lg font-mono">
           <Hash className="h-5 w-5" />
