@@ -43,12 +43,20 @@ const Chat = () => {
     try {
       setIsLoading(true);
 
+      // Verify current session
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Session expired. Please sign in again.");
+        navigate("/auth");
+        return;
+      }
+
       // Generate QR code data (raw string, not data URL)
       const qrData = JSON.stringify({
         type: bookingType,
         data: bookingData,
         timestamp: new Date().toISOString(),
-        userId: user.id,
+        userId: session.user.id,
       });
 
       // Save to database
@@ -60,12 +68,15 @@ const Chat = () => {
           booking_date: new Date(bookingData.date).toISOString(),
           qr_code_data: qrData,
           status: "confirmed",
-          user_id: user.id,
+          user_id: session.user.id,
         }])
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error("[Booking] Database error:", error);
+        throw error;
+      }
 
       // Send confirmation email
       const userEmail = user.email || bookingData.email;
