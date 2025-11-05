@@ -29,6 +29,9 @@ All colors MUST be HSL.
     --accent: 195 100% 60%;
     --accent-foreground: 0 0% 100%;
 
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
     --destructive: 0 85% 60%;
     --destructive-foreground: 0 0% 100%;
 
@@ -71,6 +74,9 @@ All colors MUST be HSL.
 
     --accent: 195 100% 55%;
     --accent-foreground: 0 0% 100%;
+
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
 
     --destructive: 0 85% 60%;
     --destructive-foreground: 0 0% 100%;
@@ -154,6 +160,15 @@ All colors MUST be HSL.
     }
   }
 
+  @keyframes bounce-green {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
   .animate-float {
     animation: float 6s ease-in-out infinite;
   }
@@ -172,5 +187,13 @@ All colors MUST be HSL.
 
   .animate-shield-pulse {
     animation: shield-pulse 2s ease-in-out infinite;
+  }
+
+  .animate-bounce-green {
+    animation: bounce-green 2s ease-in-out infinite;
+  }
+
+  .green-glow {
+    box-shadow: 0 0 20px hsl(142 76% 36% / 0.5);
   }
 }

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { MessageSquare, Zap, Shield, Clock } from "lucide-react";
+import { MessageSquare, Zap, Shield, Clock, CheckCircle2, Lock } from "lucide-react";
 
 const Index = () => {
   return (
@@ -39,6 +39,31 @@ const Index = () => {
             </div>
           </div>
         </div>
+
+        {/* Green verification badges scattered */}
+        <div className="absolute top-32 right-20 animate-bounce-green green-glow">
+          <div className="bg-[hsl(142,76%,36%)] rounded-full p-2">
+            <CheckCircle2 className="h-6 w-6 text-white" />
+          </div>
+        </div>
+
+        <div className="absolute top-1/3 left-1/4 animate-bounce-green green-glow" style={{ animationDelay: '-1s' }}>
+          <div className="bg-[hsl(142,76%,36%)] rounded-full p-2">
+            <Lock className="h-5 w-5 text-white" />
+          </div>
+        </div>
+
+        <div className="absolute bottom-1/3 right-1/4 animate-bounce-green green-glow" style={{ animationDelay: '-2s' }}>
+          <div className="bg-[hsl(142,76%,36%)] rounded-full p-2">
+            <CheckCircle2 className="h-6 w-6 text-white" />
+          </div>
+        </div>
+
+        <div className="absolute bottom-40 left-20 animate-bounce-green green-glow" style={{ animationDelay: '-0.5s' }}>
+          <div className="bg-[hsl(142,76%,36%)] rounded-full p-1.5">
+            <Lock className="h-4 w-4 text-white" />
+          </div>
+        </div>
         
         {/* Floating security badge - bottom right */}
         <div className="absolute bottom-20 right-10 animate-float opacity-10" style={{ animationDelay: '-2s' }}>
@@ -50,6 +75,7 @@ const Index = () => {
             <div className="mb-4 sm:mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 sm:px-4 py-1.5 sm:py-2 animate-pulse-glow">
               <Shield className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
               <span className="text-xs sm:text-sm font-medium text-primary">Secured AI-Powered Booking</span>
+              <CheckCircle2 className="h-3 w-3 sm:h-4 sm:w-4 text-[hsl(142,76%,36%)]" />
             </div>
             <h1 className="mb-4 sm:mb-6 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground px-4">
               Support Tickets, Simplified with AI
@@ -91,7 +117,10 @@ const Index = () => {
         </div>
 
         <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <Card className="bg-gradient-card p-6 shadow-md transition-all hover:shadow-lg hover:scale-[1.02]">
+          <Card className="bg-gradient-card p-6 shadow-md transition-all hover:shadow-lg hover:scale-[1.02] relative overflow-hidden">
+            <div className="absolute top-2 right-2">
+              <CheckCircle2 className="h-4 w-4 text-[hsl(142,76%,36%)] animate-bounce-green" />
+            </div>
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-primary">
               <MessageSquare className="h-6 w-6 text-primary-foreground" />
             </div>
@@ -103,7 +132,10 @@ const Index = () => {
             </p>
           </Card>
 
-          <Card className="bg-gradient-card p-6 shadow-md transition-all hover:shadow-lg hover:scale-[1.02]">
+          <Card className="bg-gradient-card p-6 shadow-md transition-all hover:shadow-lg hover:scale-[1.02] relative overflow-hidden">
+            <div className="absolute top-2 right-2">
+              <CheckCircle2 className="h-4 w-4 text-[hsl(142,76%,36%)] animate-bounce-green" style={{ animationDelay: '-0.3s' }} />
+            </div>
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-primary">
               <Zap className="h-6 w-6 text-primary-foreground" />
             </div>
@@ -115,7 +147,10 @@ const Index = () => {
             </p>
           </Card>
 
-          <Card className="bg-gradient-card p-6 shadow-md transition-all hover:shadow-lg hover:scale-[1.02]">
+          <Card className="bg-gradient-card p-6 shadow-md transition-all hover:shadow-lg hover:scale-[1.02] relative overflow-hidden">
+            <div className="absolute top-2 right-2">
+              <CheckCircle2 className="h-4 w-4 text-[hsl(142,76%,36%)] animate-bounce-green" style={{ animationDelay: '-0.6s' }} />
+            </div>
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-primary">
               <Shield className="h-6 w-6 text-primary-foreground" />
             </div>
@@ -127,7 +162,10 @@ const Index = () => {
             </p>
           </Card>
 
-          <Card className="bg-gradient-card p-6 shadow-md transition-all hover:shadow-lg hover:scale-[1.02]">
+          <Card className="bg-gradient-card p-6 shadow-md transition-all hover:shadow-lg hover:scale-[1.02] relative overflow-hidden">
+            <div className="absolute top-2 right-2">
+              <CheckCircle2 className="h-4 w-4 text-[hsl(142,76%,36%)] animate-bounce-green" style={{ animationDelay: '-0.9s' }} />
+            </div>
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-primary">
               <Clock className="h-6 w-6 text-primary-foreground" />
             </div>
@@ -139,7 +177,10 @@ const Index = () => {
             </p>
           </Card>
 
-          <Card className="bg-gradient-card p-6 shadow-md transition-all hover:shadow-lg hover:scale-[1.02]">
+          <Card className="bg-gradient-card p-6 shadow-md transition-all hover:shadow-lg hover:scale-[1.02] relative overflow-hidden">
+            <div className="absolute top-2 right-2">
+              <CheckCircle2 className="h-4 w-4 text-[hsl(142,76%,36%)] animate-bounce-green" style={{ animationDelay: '-1.2s' }} />
+            </div>
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-primary">
               <MessageSquare className="h-6 w-6 text-primary-foreground" />
             </div>
@@ -151,7 +192,10 @@ const Index = () => {
             </p>
           </Card>
 
-          <Card className="bg-gradient-card p-6 shadow-md transition-all hover:shadow-lg hover:scale-[1.02]">
+          <Card className="bg-gradient-card p-6 shadow-md transition-all hover:shadow-lg hover:scale-[1.02] relative overflow-hidden">
+            <div className="absolute top-2 right-2">
+              <CheckCircle2 className="h-4 w-4 text-[hsl(142,76%,36%)] animate-bounce-green" style={{ animationDelay: '-1.5s' }} />
+            </div>
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-primary">
               <Zap className="h-6 w-6 text-primary-foreground" />
             </div>
