@@ -6,6 +6,45 @@ import Header from "@/components/Header";
 import BookingForm from "@/components/BookingForm";
 import QRCode from "qrcode";
 import type { User } from "@supabase/supabase-js";
+import { z } from "zod";
+
+// Validation schemas for different booking types
+const baseBookingSchema = z.object({
+  name: z.string().trim().min(2, "Name must be at least 2 characters").max(100, "Name too long"),
+  email: z.string().trim().email("Invalid email address").max(255, "Email too long"),
+  phone: z.string().trim().regex(/^[0-9+\-\s()]{10,15}$/, "Invalid phone number format"),
+  date: z.string().refine((d) => {
+    const bookingDate = new Date(d);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return bookingDate >= today;
+  }, "Date must be today or in the future"),
+  time: z.string().min(1, "Time is required"),
+});
+
+const museumBookingSchema = baseBookingSchema.extend({
+  museum: z.string().min(1, "Museum selection is required"),
+  visitors: z.number().int().min(1, "At least 1 visitor required").max(50, "Maximum 50 visitors allowed"),
+});
+
+const eventBookingSchema = baseBookingSchema.extend({
+  event: z.string().min(1, "Event selection is required"),
+  tickets: z.number().int().min(1, "At least 1 ticket required").max(20, "Maximum 20 tickets allowed"),
+});
+
+const movieBookingSchema = baseBookingSchema.extend({
+  movie: z.string().min(1, "Movie selection is required"),
+  seats: z.number().int().min(1, "At least 1 seat required").max(10, "Maximum 10 seats allowed"),
+});
+
+const facilityBookingSchema = baseBookingSchema.extend({
+  facility: z.string().min(1, "Facility selection is required"),
+  duration: z.number().int().min(1, "At least 1 hour required").max(8, "Maximum 8 hours allowed"),
+});
+
+const libraryBookingSchema = baseBookingSchema.extend({
+  purpose: z.string().min(1, "Purpose is required"),
+});
 
 const Chat = () => {
   const navigate = useNavigate();
@@ -54,21 +93,54 @@ const Chat = () => {
         return;
       }
 
-      // Generate QR code data (raw string, not data URL)
+      // Validate booking data based on type
+      let validatedData;
+      try {
+        switch (bookingType) {
+          case "museum":
+            validatedData = museumBookingSchema.parse(bookingData);
+            break;
+          case "event":
+            validatedData = eventBookingSchema.parse(bookingData);
+            break;
+          case "movie":
+            validatedData = movieBookingSchema.parse(bookingData);
+            break;
+          case "sports":
+            validatedData = facilityBookingSchema.parse(bookingData);
+            break;
+          case "library":
+            validatedData = libraryBookingSchema.parse(bookingData);
+            break;
+          default:
+            throw new Error("Invalid booking type");
+        }
+      } catch (validationError) {
+        if (validationError instanceof z.ZodError) {
+          const errorMessages = validationError.errors.map(err => err.message).join(", ");
+          toast.error(`Validation failed: ${errorMessages}`);
+        } else {
+          toast.error("Invalid booking data");
+        }
+        setIsLoading(false);
+        return;
+      }
+
+      // Generate QR code data (raw string, not data URL) - use validated data
       const qrData = JSON.stringify({
         type: bookingType,
-        data: bookingData,
+        data: validatedData,
         timestamp: new Date().toISOString(),
         userId: session.user.id,
       });
 
-      // Save to database
+      // Save to database - use validated data
       const { data, error } = await supabase
         .from("bookings")
         .insert([{
           booking_type: bookingType,
-          booking_data: bookingData as any,
-          booking_date: new Date(bookingData.date).toISOString(),
+          booking_data: validatedData as any,
+          booking_date: new Date(validatedData.date).toISOString(),
           qr_code_data: qrData,
           status: "confirmed",
           user_id: session.user.id,
@@ -81,8 +153,8 @@ const Chat = () => {
         throw error;
       }
 
-      // Send confirmation email
-      const userEmail = user.email || bookingData.email;
+      // Send confirmation email - use validated data
+      const userEmail = user.email || validatedData.email;
       try {
         const { error: emailError } = await supabase.functions.invoke("send-booking-email", {
           body: {
