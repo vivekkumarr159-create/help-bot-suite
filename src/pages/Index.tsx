@@ -27,10 +27,20 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Floating security badges */}
-        <div className="absolute top-20 left-10 animate-float opacity-10">
-          <Shield className="h-32 w-32 text-primary" />
+        {/* Enhanced security badge - top left */}
+        <div className="absolute top-10 left-10 z-20">
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-primary rounded-full blur-xl opacity-30 animate-pulse-glow"></div>
+            <div className="relative bg-background/80 backdrop-blur-sm border-2 border-primary rounded-full p-4 animate-rotate-scale animate-shield-pulse">
+              <Shield className="h-12 w-12 text-primary" />
+            </div>
+            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">
+              SECURE
+            </div>
+          </div>
         </div>
+        
+        {/* Floating security badge - bottom right */}
         <div className="absolute bottom-20 right-10 animate-float opacity-10" style={{ animationDelay: '-2s' }}>
           <Shield className="h-32 w-32 text-secondary" />
         </div>
