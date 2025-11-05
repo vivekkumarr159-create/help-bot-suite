@@ -8,11 +8,38 @@ const Index = () => {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-hero">
-        <div className="container px-4 sm:px-6 py-12 sm:py-16 md:py-20">
+        {/* Animated background text */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-5">
+          <div className="absolute top-1/4 whitespace-nowrap animate-slide-text">
+            <span className="text-6xl font-bold text-primary">
+              SECURED TICKET BOOKING SYSTEM • VERIFIED & PROTECTED • QR CODE AUTHENTICATION • 
+            </span>
+          </div>
+          <div className="absolute top-1/2 whitespace-nowrap animate-slide-text" style={{ animationDelay: '-5s' }}>
+            <span className="text-6xl font-bold text-secondary">
+              INSTANT CONFIRMATION • SAFE & RELIABLE • 24/7 SECURE BOOKING • 
+            </span>
+          </div>
+          <div className="absolute top-3/4 whitespace-nowrap animate-slide-text" style={{ animationDelay: '-10s' }}>
+            <span className="text-6xl font-bold text-accent">
+              ENCRYPTED TRANSACTIONS • TRUSTED PLATFORM • DIGITAL TICKETS • 
+            </span>
+          </div>
+        </div>
+
+        {/* Floating security badges */}
+        <div className="absolute top-20 left-10 animate-float opacity-10">
+          <Shield className="h-32 w-32 text-primary" />
+        </div>
+        <div className="absolute bottom-20 right-10 animate-float opacity-10" style={{ animationDelay: '-2s' }}>
+          <Shield className="h-32 w-32 text-secondary" />
+        </div>
+
+        <div className="container px-4 sm:px-6 py-12 sm:py-16 md:py-20 relative z-10">
           <div className="mx-auto max-w-4xl text-center">
-            <div className="mb-4 sm:mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 sm:px-4 py-1.5 sm:py-2">
-              <MessageSquare className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
-              <span className="text-xs sm:text-sm font-medium text-primary">AI-Powered Support</span>
+            <div className="mb-4 sm:mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 sm:px-4 py-1.5 sm:py-2 animate-pulse-glow">
+              <Shield className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+              <span className="text-xs sm:text-sm font-medium text-primary">Secured AI-Powered Booking</span>
             </div>
             <h1 className="mb-4 sm:mb-6 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground px-4">
               Support Tickets, Simplified with AI
@@ -38,8 +65,8 @@ const Index = () => {
         </div>
         
         {/* Decorative gradient orbs */}
-        <div className="absolute -left-32 top-0 h-64 w-64 rounded-full bg-primary/20 blur-3xl"></div>
-        <div className="absolute -right-32 bottom-0 h-64 w-64 rounded-full bg-secondary/20 blur-3xl"></div>
+        <div className="absolute -left-32 top-0 h-64 w-64 rounded-full bg-primary/20 blur-3xl animate-pulse-glow"></div>
+        <div className="absolute -right-32 bottom-0 h-64 w-64 rounded-full bg-secondary/20 blur-3xl animate-pulse-glow" style={{ animationDelay: '-1.5s' }}></div>
       </section>
 
       {/* Features Section */}

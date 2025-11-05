@@ -212,7 +212,7 @@ const BookingForm = ({ onSubmit, isLoading }: BookingFormProps) => {
                 min="1"
                 required
                 value={formData.visitors || ""}
-                onChange={(e) => updateFormData("visitors", e.target.value)}
+                onChange={(e) => updateFormData("visitors", parseInt(e.target.value) || "")}
               />
             </div>
           </>
@@ -244,7 +244,7 @@ const BookingForm = ({ onSubmit, isLoading }: BookingFormProps) => {
                 max="8"
                 required
                 value={formData.duration || ""}
-                onChange={(e) => updateFormData("duration", e.target.value)}
+                onChange={(e) => updateFormData("duration", parseInt(e.target.value) || "")}
               />
             </div>
           </>
@@ -277,7 +277,7 @@ const BookingForm = ({ onSubmit, isLoading }: BookingFormProps) => {
                 max="4"
                 required
                 value={formData.duration || ""}
-                onChange={(e) => updateFormData("duration", e.target.value)}
+                onChange={(e) => updateFormData("duration", parseInt(e.target.value) || "")}
               />
             </div>
           </>
@@ -310,7 +310,7 @@ const BookingForm = ({ onSubmit, isLoading }: BookingFormProps) => {
                 max="10"
                 required
                 value={formData.seats || ""}
-                onChange={(e) => updateFormData("seats", e.target.value)}
+                onChange={(e) => updateFormData("seats", parseInt(e.target.value) || "")}
               />
             </div>
             <div>
@@ -356,7 +356,7 @@ const BookingForm = ({ onSubmit, isLoading }: BookingFormProps) => {
                 max="10"
                 required
                 value={formData.tickets || ""}
-                onChange={(e) => updateFormData("tickets", e.target.value)}
+                onChange={(e) => updateFormData("tickets", parseInt(e.target.value) || "")}
               />
             </div>
             <div>
