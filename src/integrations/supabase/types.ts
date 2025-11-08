@@ -24,7 +24,7 @@ export type Database = {
           id: string
           qr_code_data: string
           status: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           booking_data: Json
@@ -35,7 +35,7 @@ export type Database = {
           id?: string
           qr_code_data: string
           status?: string
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           booking_data?: Json
@@ -46,7 +46,7 @@ export type Database = {
           id?: string
           qr_code_data?: string
           status?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }

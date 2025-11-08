@@ -110,11 +110,39 @@ const SupportDashboard = () => {
 
     try {
       setIsSaving(true);
+      
+      // Validate the edited data using the appropriate schema
+      const { getSchemaForBookingType } = await import('@/utils/bookingValidation');
+      const schema = getSchemaForBookingType(booking.booking_type);
+      
+      // Parse numeric fields properly
+      const dataToValidate = {
+        ...editData,
+        visitors: editData.visitors ? Number(editData.visitors) : undefined,
+        seats: editData.seats ? Number(editData.seats) : undefined,
+        tickets: editData.tickets ? Number(editData.tickets) : undefined,
+        duration: editData.duration ? Number(editData.duration) : undefined,
+      };
 
+      const validationResult = schema.safeParse(dataToValidate);
+      
+      if (!validationResult.success) {
+        const errorMessage = validationResult.error.errors
+          .map(err => `${err.path.join('.')}: ${err.message}`)
+          .join(', ');
+        
+        toast.error(`Validation Error: ${errorMessage}`);
+        setIsSaving(false);
+        return;
+      }
+
+      // Use validated data
+      const validatedData = validationResult.data;
+      
       const { error } = await supabase
         .from("bookings")
         .update({
-          booking_data: editData,
+          booking_data: validatedData,
         })
         .eq("id", booking.id);
 
@@ -123,7 +151,7 @@ const SupportDashboard = () => {
       // Generate new QR code data
       const qrData = JSON.stringify({
         type: booking.booking_type,
-        data: editData,
+        data: validatedData,
         timestamp: new Date().toISOString(),
         userId: booking.user_id,
       });
@@ -148,6 +176,7 @@ const SupportDashboard = () => {
 
       if (updatedBooking) {
         setBooking(updatedBooking);
+        setEditData(updatedBooking.booking_data);
       }
     } catch (error) {
       console.error("[SupportDashboard] Save error:", error);
